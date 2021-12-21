@@ -1,4 +1,7 @@
-fetch("http://localhost:3000/api/products")
+// recupération de L'API et ajout des donner sur la page index //
+async function chargementProduit(){
+    
+    fetch("http://localhost:3000/api/products")
     .then(reponse => reponse.json())
     .then(articles => {
         console.table(articles)
@@ -21,3 +24,5 @@ fetch("http://localhost:3000/api/products")
         }
     })
     .catch(err => console.log(err))
+}
+chargementProduit();
