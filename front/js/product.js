@@ -27,17 +27,22 @@ function getArticle(articleId) {
         element.querySelector("#description").insertAdjacentHTML("afterbegin", article.description);
 
         element.querySelector("#colors").insertAdjacentHTML("beforeend", article.colors.map(color => `<option value="${color}">${color}</option>`));
-
-        //event bouton panier//
-        document.querySelector("#addToCart").addEventListener("click", (event)=> {
         
+        //event bouton panier//
+        
+        const idCouleur = document.querySelector("#colors");
+
+        document.querySelector("#addToCart").addEventListener("click", (event)=> {
         event.preventDefault();
         
+        const couleurSelect = idCouleur.value;
+
         let optionsProduit = {
             Produit: article.name,
             prix: article.price,
+            couleur: couleurSelect,
         }
-console.log(optionsProduit);
+            console.log(optionsProduit);
         })
     })
     .catch(err => console.log(err))
