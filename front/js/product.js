@@ -31,16 +31,19 @@ function getArticle(articleId) {
         //event bouton panier//
         
         const idCouleur = document.querySelector("#colors");
+        const quantite = document.querySelector("#quantity");
 
         document.querySelector("#addToCart").addEventListener("click", (event)=> {
         event.preventDefault();
         
         const couleurSelect = idCouleur.value;
+        const quantiteSelect = quantite.value;
 
         let optionsProduit = {
             Produit: article.name,
             prix: article.price,
             couleur: couleurSelect,
+            quantite: quantiteSelect,
         }
             console.log(optionsProduit);
         })
