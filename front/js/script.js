@@ -10,7 +10,6 @@ async function chargementProduit(){
         
 
         for(article of articles){
-            console.log(article)
 
             section.insertAdjacentHTML('beforeend', `
             <a href="./product.html?id=${article._id}">

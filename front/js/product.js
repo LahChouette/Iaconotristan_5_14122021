@@ -29,7 +29,6 @@ function getArticle(articleId) {
         element.querySelector("#colors").insertAdjacentHTML("beforeend", article.colors.map(color => `<option value="${color}">${color}</option>`));
         
         //event bouton panier//
-        
         const idCouleur = document.querySelector("#colors");
         const quantite = document.querySelector("#quantity");
 
@@ -46,6 +45,26 @@ function getArticle(articleId) {
             quantite: quantiteSelect,
         }
             console.log(optionsProduit);
+        
+        //LocalStorage//
+        let produitEnregistreDansLocalStorage = JSON.parse(localStorage.getItem("produit"));
+
+            // si il y a déja des produit dans le localstorage //
+            if(produitEnregistreDansLocalStorage){
+                produitEnregistreDansLocalStorage.push(optionsProduit);
+                localStorage.setItem("produit", JSON.stringify(produitEnregistreDansLocalStorage));
+            
+            }
+            
+            // si il n'y a pas de produit dans le localstorage //
+            else{
+                produitEnregistreDansLocalStorage = [];
+                produitEnregistreDansLocalStorage.push(optionsProduit);
+                localStorage.setItem("produit", JSON.stringify(produitEnregistreDansLocalStorage));
+                console.log(produitEnregistreDansLocalStorage);
+            }
+        
+        
         })
     })
     .catch(err => console.log(err))
