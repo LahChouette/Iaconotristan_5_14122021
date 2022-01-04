@@ -47,7 +47,9 @@ function getArticle(articleId) {
             // recuperation du formulaire //
             let optionsPanier = {
                 id: article._id,
-                produit: article.name,
+                img: article.imageUrl,
+                nom: article.name,
+                description: article.description,
                 prix: article.price,
                 couleur: couleurSelect,
                 quantite: quantiteSelect,
