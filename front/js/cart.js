@@ -1,24 +1,22 @@
 //LocalStorage//
 let produitLocalStorage = JSON.parse(localStorage.getItem("panier"));
 
-// Produit du Panier //
-
-const element2 = document.querySelector("#cart__items");
-let structurePanier = [];
-
-
 function getPanier(){
-    // si le panier est vide //
+    
+  // Produit du Panier //
+
+  const element2 = document.querySelector("#cart__items");
+  let structurePanier = [];
+  
+  // si le panier est vide //
    
     if (produitLocalStorage === null){
-        console.log("je suis vide")
 
 
     } else {
-        // affiche le panier si il n'est pas vide //
-        
-
-        for(i = 0; i < produitLocalStorage.length; i++){
+      
+      // affiche le panier si il n'est pas vide //
+        for (i = 0; i < produitLocalStorage.length; i++){
             structurePanier = structurePanier + `
             <article class="cart__item" data-id="${produitLocalStorage[i].id}" data-color="${produitLocalStorage[i].couleur}">
               <div class="cart__item__img">
@@ -41,26 +39,65 @@ function getPanier(){
                 </div>
               </div>
             </article>`;
+           
         }
+        
         // insertion html dans la page panier //
-        if(i === produitLocalStorage.length){
+        if (i === produitLocalStorage.length){
             element2.innerHTML = structurePanier;
         }
     }
 }
 getPanier();
 
+function getTotal(){
+  // Récupération du prix total//
+  let prixtotal = []
+
+  for (let p = 0; p < produitLocalStorage.length; p++){
+      let prixProduit = produitLocalStorage[p].prix;
+
+      prixtotal.push(prixProduit)
+  }
+  // addition //
+  const prixTotals = prixtotal.reduce((acc, cur) => acc + cur);
+  
+  // injection prix total dans page panier //
+  let affichePrixTotal = document.getElementById('totalPrice');
+  affichePrixTotal.innerHTML = prixTotals
+  
+  // Récupération quantité total //
+  let qtttotal = [];
+
+  for (let q = 0; q < produitLocalStorage.length; q++){
+    let quantitepanier = Number(produitLocalStorage[q].quantite);
+    
+    qtttotal.push(quantitepanier);
+  }
+  // addition //
+  const quantitetotal = qtttotal.reduce((acc, cur) => acc + cur);
+
+  // injection quantité total dans page panier //
+  let affichequantiteTotal = document.getElementById('totalQuantity');
+  affichequantiteTotal.innerHTML = quantitetotal 
+}
+getTotal();
 
 function supprimeProduit(){
   let btn_supprimer = document.querySelectorAll(".deleteItem");
 
   for (let k = 0; k < btn_supprimer.length; k++){
       btn_supprimer[k].addEventListener("click", (event) => {
-          event.preventDefault();
+
+
+          let article = event.target.closest('article')
 
           // Selection de l'element a supprimer //
-          let idSupprime = produitLocalStorage[k].id;
-          let couleurSupprime = produitLocalStorage[k].couleur;
+          // let idSupprime = produitLocalStorage[k].id;
+          // let couleurSupprime = produitLocalStorage[k].couleur;
+
+          let idSupprime = article.dataset.id
+          let couleurSupprime = article.dataset.color
 
           // Selectionne les elements a garder et supprime l'élément selectionné avec le bouton //
           produitLocalStorage = produitLocalStorage.filter( el => el.id !== idSupprime || el.couleur !== couleurSupprime );
@@ -68,12 +105,13 @@ function supprimeProduit(){
           localStorage.setItem("panier", JSON.stringify(produitLocalStorage));
           
           // message quand on supprime un element //
+          article.remove()
           alert("Ce produit a bien été supprimé du panier");
           
+          
           // permet de recharger la page //
-          location.reload();
+          // location.reload();
       })
   }
-
 }
 supprimeProduit();
