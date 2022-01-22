@@ -50,7 +50,7 @@ function getArticle(articleId) {
                 img: article.imageUrl,
                 nom: article.name,
                 description: article.description,
-                prix: (article.price * quantiteSelect),
+                prix: article.price,
                 couleur: couleurSelect,
                 quantite: quantiteSelect,
             }

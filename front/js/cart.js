@@ -1,5 +1,23 @@
 let produitLocalStorage = JSON.parse(localStorage.getItem("panier"));
 
+// affiche le total //
+let produitTotalPrix = document.getElementById('totalPrice');
+let produitTotalQuantite = document.getElementById('totalQuantity');
+let calculprixtotal = 0
+let calculquantitetotal = 0
+
+
+let displayTotal = () => {
+  produitTotalPrix.innerHTML = calculprixtotal;
+  produitTotalQuantite.innerHTML = calculquantitetotal;
+}
+
+let updateTotal = (prixTotal, quantitetotal) => {
+  calculprixtotal += prixTotal
+  calculquantitetotal += quantitetotal
+  displayTotal()
+}
+
 function getPanier(){
     
   // Produit du Panier //
@@ -7,12 +25,24 @@ function getPanier(){
   let structurePanier = [];
 
   // Récupération du prix total//
-  let affichePrixTotal = document.getElementById('totalPrice');
-  let prixtotal = []
-
+  //affichePrixTotal = document.getElementById('totalPrice');
+  //let prixtotal = []
+  
+  // **************************************************
+  
+  //let produitTotalPrix = document.getElementById('totalPrice');
+  prixtotal = 0;
+  
+  // *****************************************************
+  
   // Récupération quantité total //
-  let affichequantiteTotal = document.getElementById('totalQuantity');
-  let qtttotal = [];
+  //affichequantiteTotal = document.getElementById('totalQuantity');
+  //let qtttotal = [];
+  
+  // ******************************************************
+  
+  //let produitTotalQuantite = document.getElementById('totalQuantity');
+  quantitetotal = 0;
   
   // si le panier est vide //
    
@@ -36,7 +66,7 @@ function getPanier(){
                 <div class="cart__item__content__settings">
                   <div class="cart__item__content__settings__quantity">
                     <p>Qté :${produitLocalStorage[i].quantite}</p>
-                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="1">
+                    <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${produitLocalStorage[i].quantite}">
                   </div>
                   <div class="cart__item__content__settings__delete">
                     <p class="deleteItem">Supprimer</p>
@@ -44,73 +74,68 @@ function getPanier(){
                 </div>
               </div>
             </article>`;
+            // addition quantité et prix total //
+            let quantitepanier = Number(produitLocalStorage[i].quantite);
+            quantitetotal += quantitepanier;
+            prixtotal += (produitLocalStorage[i].quantite * produitLocalStorage[i].prix);
+            
+            // *******************************************
+            
             // récupération des prix et quantité dans le panier et injecte dans prixtotal et qtttotal // 
-            let prixProduit = produitLocalStorage[i].prix;
+            /* let prixProduit = produitLocalStorage[i].prix;
             prixtotal.push(prixProduit);
             let quantitepanier = Number(produitLocalStorage[i].quantite);
-            qtttotal.push(quantitepanier);
+            qtttotal.push(quantitepanier);*/
         }
           // addition des prix et quantité total //
-          const prixTotals = prixtotal.reduce((acc, cur) => acc + cur, 0);
-          const quantitetotal = qtttotal.reduce((acc, cur) => acc + cur, 0);
-
+          /*const prixTotals = prixtotal.reduce((acc, cur) => acc + cur, 0);
+          const quantitetotal = qtttotal.reduce((acc, cur) => acc + cur, 0);*/
 
         // insertion html dans la page panier //
         if (i === produitLocalStorage.length){
             element2.innerHTML = structurePanier;
-            affichePrixTotal.innerHTML = prixTotals;
-            affichequantiteTotal.innerHTML = quantitetotal;
+            //produitTotalQuantite.innerHTML = quantitetotal;
+            //produitTotalPrix.innerHTML = prixtotal;
+            updateTotal(prixtotal, quantitetotal)
         }
     }
 }
 getPanier();
 
-/*function getTotal(){
-  // Récupération du prix total//
-  let prixtotal = []
 
-  for (let p = 0; p < produitLocalStorage.length; p++){
-      let prixProduit = produitLocalStorage[p].prix;
 
-      prixtotal.push(prixProduit)
+function qttModif() {
+  let qttModif = document.querySelectorAll(".itemQuantity");
+
+  for (let q = 0; q < qttModif.length; q++){
+      qttModif[q].addEventListener("change" , () => {
+        // Selection de l'element à modifier en fonction de son id et couleur //
+        let quantityModif = produitLocalStorage[q].quantite;
+        let qttModifValue = qttModif[q].valueAsNumber;
+
+        const resultFind = produitLocalStorage.find((elm) => elm.qttModifValue !== quantityModif);
+
+        resultFind.quantite = qttModifValue;
+        produitLocalStorage[q].quantite = resultFind.quantite;
+
+        localStorage.setItem("panier", JSON.stringify(produitLocalStorage));
+
+        // test //
+        //location.reload();
+
+      })
   }
-  // addition //
-  const prixTotals = prixtotal.reduce((acc, cur) => acc + cur);
-  
-  // injection prix total dans page panier //
-  let affichePrixTotal = document.getElementById('totalPrice');
-  affichePrixTotal.innerHTML = prixTotals
-  
-  // Récupération quantité total //
-  let qtttotal = [];
-
-  for (let q = 0; q < produitLocalStorage.length; q++){
-    let quantitepanier = Number(produitLocalStorage[q].quantite);
-    
-    qtttotal.push(quantitepanier);
-  }
-  // addition //
-  const quantitetotal = qtttotal.reduce((acc, cur) => acc + cur);
-
-  // injection quantité total dans page panier //
-  let affichequantiteTotal = document.getElementById('totalQuantity');
-  affichequantiteTotal.innerHTML = quantitetotal 
 }
-getTotal(); */
+qttModif();
 
 function supprimeProduit(){
   let btn_supprimer = document.querySelectorAll(".deleteItem");
-
+  
   for (let k = 0; k < btn_supprimer.length; k++){
       btn_supprimer[k].addEventListener("click", (event) => {
-
-
           let article = event.target.closest('article')
-
+         
           // Selection de l'element a supprimer //
-          // let idSupprime = produitLocalStorage[k].id;
-          // let couleurSupprime = produitLocalStorage[k].couleur;
-
           let idSupprime = article.dataset.id
           let couleurSupprime = article.dataset.color
 
@@ -119,13 +144,11 @@ function supprimeProduit(){
 
           localStorage.setItem("panier", JSON.stringify(produitLocalStorage));
           
+          // refresh rapide //
+          location.reload()
           // message quand on supprime un element //
           article.remove()
           alert("Ce produit a bien été supprimé du panier");
-          
-          
-          // permet de recharger la page //
-          // location.reload();
       })
   }
 }
@@ -149,8 +172,10 @@ function getFormulaire(){
 
     if (nomRegExp.test(inputfirstName.value)) {
         firstNameErrorMsg.innerHTML = '';
+        return true;
     } else {
         firstNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+        return false;
     }
   };
   // écouter la modification du nom //
@@ -163,8 +188,10 @@ function getFormulaire(){
   
     if (nomRegExp.test(inputlastName.value)) {
         lastNameErrorMsg.innerHTML = '';
+        return true;
     } else {
         lastNameErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+        return false;
     }
   };
   // écouter la modification de l'adresse //
@@ -177,8 +204,10 @@ function getFormulaire(){
 
     if (adressRegExp.test(inputaddress.value)) {
       addressErrorMsg.innerHTML = '';
+      return true;
     } else {
       addressErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+      return false;
     }
   };
 
@@ -190,10 +219,12 @@ function getFormulaire(){
   const validcity = function(inputcity) {
     let cityErrorMsg = inputcity.nextElementSibling;
 
-    if (adressRegExp.test(inputcity.value)) {
+    if (nomRegExp.test(inputcity.value)) {
         cityErrorMsg.innerHTML = '';
+        return true;
     } else {
         cityErrorMsg.innerHTML = 'Veuillez renseigner ce champ.';
+        return false;
     }
   };
   
@@ -201,27 +232,31 @@ function getFormulaire(){
   formulaire.email.addEventListener('change', function() {
     validEmail(this);
   });
-  
   // Test l'expression reguliere //
   const validEmail = function(inputEmail) {
-        let emailErrorMsg = inputEmail.nextElementSibling;
+    let emailErrorMsg = inputEmail.nextElementSibling;
 
-        if (emailRegExp.test(inputEmail.value)) {
-            emailErrorMsg.innerHTML = '';
-        } else {
-            emailErrorMsg.innerHTML = 'Veuillez renseigner votre email.';
-        }
+    if (emailRegExp.test(inputEmail.value)) {
+        emailErrorMsg.innerHTML = '';
+        return true;
+
+    } else {
+        emailErrorMsg.innerHTML = 'Veuillez renseigner votre email.';
+        return false;
+    }
   };
-
+  
+  // validation bouton
+  formulaire.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (validfirstName(formulaire.firstName) && validlastName(formulaire.lastName) && validaddress(formulaire.address) && validcity(formulaire.city) && validEmail(formulaire.email)){
+      envoyeFormulaire();
+    }
+  })
 }
 getFormulaire();
 
 function envoyeFormulaire(){
-  const btn_commander = document.getElementById("order");
-
-  // Ecouter le panier //
-  btn_commander.addEventListener("click", (event)=>{
-  event.preventDefault(); 
     //Récupération des coordonnées du formulaire client
     let inputName = document.getElementById('firstName');
     let inputLastName = document.getElementById('lastName');
@@ -229,21 +264,40 @@ function envoyeFormulaire(){
     let inputCity = document.getElementById('city');
     let inputMail = document.getElementById('email');
     
-    // récupération du panier dans localstorage //
-    let commande = produitLocalStorage;
+    // récupération des produit dans panier //
+    let commande = [];
+    for (let c = 0; c <produitLocalStorage.length;c++) {
+      commande.push(produitLocalStorage[c].id);
+    }
     
     // le formulaire + les produit dans le panier //
     const order = {
       contact : {
-          prénom: inputName.value,
-          nom: inputLastName.value,
-          addresse: inputAdress.value,
-          vile: inputCity.value,
-          email: inputMail.value,
+        firstName: inputName.value,
+        lastName: inputLastName.value,
+        address: inputAdress.value,
+        city: inputCity.value,
+        email: inputMail.value,
       },
-      produit: commande,
+      products: commande,
     }
-    console.log(order);
-  })
+
+    const aEnvoyer = {
+      method: 'POST',
+      body: JSON.stringify(order),
+      headers: { 
+        "Content-Type": "application/json" 
+      },
+    };
+
+    fetch("http://localhost:3000/api/products/order", aEnvoyer)
+    .then((response) => response.json())
+    .then((rep) => {
+        console.log(rep);
+        localStorage.removeItem('panier');
+        //localStorage.setItem("orderId", rep.orderId);
+        document.location.href = "confirmation.html?id="+rep.orderId;
+        
+    })
+  //}) 
 };
-envoyeFormulaire();
