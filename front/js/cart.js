@@ -1,6 +1,5 @@
 let produitLocalStorage = JSON.parse(localStorage.getItem("panier"));
 
-
 function getPanier(){
     
   // Produit du Panier //
@@ -124,6 +123,7 @@ function supprimeProduit(){
           article.remove()
           // popup pour prévenir le produit et supprimé //
           alert("Ce produit a bien été supprimé du panier");
+          getTotals();
       })
   }
 }
