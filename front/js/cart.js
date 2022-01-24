@@ -1,48 +1,11 @@
 let produitLocalStorage = JSON.parse(localStorage.getItem("panier"));
 
-// affiche le total //
-let produitTotalPrix = document.getElementById('totalPrice');
-let produitTotalQuantite = document.getElementById('totalQuantity');
-let calculprixtotal = 0
-let calculquantitetotal = 0
-
-
-let displayTotal = () => {
-  produitTotalPrix.innerHTML = calculprixtotal;
-  produitTotalQuantite.innerHTML = calculquantitetotal;
-}
-
-let updateTotal = (prixTotal, quantitetotal) => {
-  calculprixtotal += prixTotal
-  calculquantitetotal += quantitetotal
-  displayTotal()
-}
 
 function getPanier(){
     
   // Produit du Panier //
   const element2 = document.querySelector("#cart__items");
   let structurePanier = [];
-
-  // Récupération du prix total//
-  //affichePrixTotal = document.getElementById('totalPrice');
-  //let prixtotal = []
-  
-  // **************************************************
-  
-  //let produitTotalPrix = document.getElementById('totalPrice');
-  prixtotal = 0;
-  
-  // *****************************************************
-  
-  // Récupération quantité total //
-  //affichequantiteTotal = document.getElementById('totalQuantity');
-  //let qtttotal = [];
-  
-  // ******************************************************
-  
-  //let produitTotalQuantite = document.getElementById('totalQuantity');
-  quantitetotal = 0;
   
   // si le panier est vide //
    
@@ -65,7 +28,7 @@ function getPanier(){
                 </div>
                 <div class="cart__item__content__settings">
                   <div class="cart__item__content__settings__quantity">
-                    <p>Qté :${produitLocalStorage[i].quantite}</p>
+                    <p>Qté :</p>
                     <input type="number" class="itemQuantity" name="itemQuantity" min="1" max="100" value="${produitLocalStorage[i].quantite}">
                   </div>
                   <div class="cart__item__content__settings__delete">
@@ -74,54 +37,68 @@ function getPanier(){
                 </div>
               </div>
             </article>`;
-            // addition quantité et prix total //
-            let quantitepanier = Number(produitLocalStorage[i].quantite);
-            quantitetotal += quantitepanier;
-            prixtotal += (produitLocalStorage[i].quantite * produitLocalStorage[i].prix);
-            
-            // *******************************************
-            
-            // récupération des prix et quantité dans le panier et injecte dans prixtotal et qtttotal // 
-            /* let prixProduit = produitLocalStorage[i].prix;
-            prixtotal.push(prixProduit);
-            let quantitepanier = Number(produitLocalStorage[i].quantite);
-            qtttotal.push(quantitepanier);*/
         }
-          // addition des prix et quantité total //
-          /*const prixTotals = prixtotal.reduce((acc, cur) => acc + cur, 0);
-          const quantitetotal = qtttotal.reduce((acc, cur) => acc + cur, 0);*/
-
         // insertion html dans la page panier //
         if (i === produitLocalStorage.length){
             element2.innerHTML = structurePanier;
-            //produitTotalQuantite.innerHTML = quantitetotal;
-            //produitTotalPrix.innerHTML = prixtotal;
-            updateTotal(prixtotal, quantitetotal)
         }
     }
 }
 getPanier();
 
+function getTotals(){
+
+  // Récupération des quantités total //
+  let produitQuantite = document.getElementsByClassName('itemQuantity');
+  let quantite = produitQuantite.length,
+  totalQuantite = 0;
+
+  for (let h = 0; h < quantite; ++h) {
+      totalQuantite += produitQuantite[h].valueAsNumber;
+  }
+
+  let produitTotalQuantite = document.getElementById('totalQuantity');
+  produitTotalQuantite.innerHTML = totalQuantite;
+
+  // Récupération du prix total //
+  totalPrix = 0;
+
+  for (let h = 0; h < quantite; ++h) {
+      totalPrix += (produitQuantite[h].valueAsNumber * produitLocalStorage[h].prix);
+  }
+
+  let produitTotalPrix = document.getElementById('totalPrice');
+  produitTotalPrix.innerHTML = totalPrix;
+}
+getTotals();
 
 
 function qttModif() {
   let qttModif = document.querySelectorAll(".itemQuantity");
 
   for (let q = 0; q < qttModif.length; q++){
-      qttModif[q].addEventListener("change" , () => {
-        // Selection de l'element à modifier en fonction de son id et couleur //
-        let quantityModif = produitLocalStorage[q].quantite;
-        let qttModifValue = qttModif[q].valueAsNumber;
-
-        const resultFind = produitLocalStorage.find((elm) => elm.qttModifValue !== quantityModif);
-
-        resultFind.quantite = qttModifValue;
-        produitLocalStorage[q].quantite = resultFind.quantite;
-
-        localStorage.setItem("panier", JSON.stringify(produitLocalStorage));
-
-        // test //
-        //location.reload();
+      qttModif[q].addEventListener("change" ,() => {
+        
+        // Selection de l'element à modifier //
+        let NouvelleQtt = qttModif[q].value;
+        
+        const nouveauLocalStorage = {
+          id: produitLocalStorage[q].id,
+          img: produitLocalStorage[q].img,
+          nom: produitLocalStorage[q].nom,
+          description: produitLocalStorage[q].description,
+          prix: produitLocalStorage[q].prix,
+          couleur: produitLocalStorage[q].couleur,
+          // La nouvelle quantité souhaitée //
+          quantite: NouvelleQtt,
+        };
+        // Actualiser le localStorage //  
+        produitLocalStorage[q] = nouveauLocalStorage;
+        localStorage.setItem('panier', JSON.stringify(produitLocalStorage));
+    
+        // popup pour prévenir que le panier a était modifier //
+        alert('Votre panier est à jour.');
+        getTotals();
 
       })
   }
@@ -143,11 +120,9 @@ function supprimeProduit(){
           produitLocalStorage = produitLocalStorage.filter( el => el.id !== idSupprime || el.couleur !== couleurSupprime );
 
           localStorage.setItem("panier", JSON.stringify(produitLocalStorage));
-          
-          // refresh rapide //
-          location.reload()
-          // message quand on supprime un element //
+
           article.remove()
+          // popup pour prévenir le produit et supprimé //
           alert("Ce produit a bien été supprimé du panier");
       })
   }
@@ -295,9 +270,7 @@ function envoyeFormulaire(){
     .then((rep) => {
         console.log(rep);
         localStorage.removeItem('panier');
-        //localStorage.setItem("orderId", rep.orderId);
         document.location.href = "confirmation.html?id="+rep.orderId;
         
     })
-  //}) 
 };
