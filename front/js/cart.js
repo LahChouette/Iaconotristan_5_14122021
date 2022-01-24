@@ -121,9 +121,11 @@ function supprimeProduit(){
           localStorage.setItem("panier", JSON.stringify(produitLocalStorage));
 
           article.remove()
-          // popup pour prévenir le produit et supprimé //
-          alert("Ce produit a bien été supprimé du panier");
-          getTotals();
+          
+          // popup pour prévenir le produit et supprimé avec un refresh //
+          location.reload()
+          alert("Ce produit a bien été supprimé du panier.");
+
       })
   }
 }
