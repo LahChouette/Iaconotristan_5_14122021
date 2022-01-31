@@ -77,10 +77,9 @@ function qttModif() {
 
   for (let q = 0; q < qttModif.length; q++){
       qttModif[q].addEventListener("change" ,() => {
-        
         // Selection de l'element à modifier //
         let NouvelleQtt = qttModif[q].value;
-        
+
         const nouveauLocalStorage = {
           id: produitLocalStorage[q].id,
           img: produitLocalStorage[q].img,
@@ -120,10 +119,10 @@ function supprimeProduit(){
 
           localStorage.setItem("panier", JSON.stringify(produitLocalStorage));
 
+
           article.remove()
           
           // popup pour prévenir le produit et supprimé avec un refresh //
-          location.reload()
           alert("Ce produit a bien été supprimé du panier.");
 
       })
