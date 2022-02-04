@@ -41,7 +41,7 @@ function getArticle(articleId) {
             const couleurSelect = document.querySelector("#colors").value;
             const quantiteSelect = document.querySelector("#quantity").value;
 
-            // impossible de choisir une quantité a 0 //
+            // impossible de choisir une quantité a 0 ou plus de 100 //
             if (quantiteSelect > 0 && quantiteSelect <=100 && quantiteSelect != 0){
                 
                 // recuperation du formulaire //
@@ -92,7 +92,9 @@ function getArticle(articleId) {
                     localStorage.setItem("panier", JSON.stringify(produitLocalStorage));
                     popupConfirmation();
                 }
-            }    
+            } else {
+                alert('Veuillez choisir la quantité du produit.');
+            }   
         })
     })
     .catch(err => console.log(err))

@@ -124,6 +124,8 @@ function supprimeProduit(){
           
           // popup pour prévenir le produit et supprimé avec un refresh //
           alert("Ce produit a bien été supprimé du panier.");
+          //location.reload()
+          getTotals();
 
       })
   }
@@ -222,7 +224,7 @@ function getFormulaire(){
     }
   };
   
-  // validation bouton
+  // validation bouton //
   formulaire.addEventListener('submit', function (e) {
     e.preventDefault();
     if (validfirstName(formulaire.firstName) && validlastName(formulaire.lastName) && validaddress(formulaire.address) && validcity(formulaire.city) && validEmail(formulaire.email)){
@@ -233,7 +235,7 @@ function getFormulaire(){
 getFormulaire();
 
 function envoyeFormulaire(){
-    //Récupération des coordonnées du formulaire client
+    // Récupération des coordonnées du formulaire client //
     let inputName = document.getElementById('firstName');
     let inputLastName = document.getElementById('lastName');
     let inputAdress = document.getElementById('address');
